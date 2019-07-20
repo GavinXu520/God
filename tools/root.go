@@ -1,4 +1,4 @@
-package log
+package tools
 
 //
 //import (
@@ -13,7 +13,7 @@ package log
 //	wamsLogLevel  = LvlInfo
 //)
 //
-//func init() {
+//func common() {
 //	root.SetHandler(DiscardHandler())
 //}
 //

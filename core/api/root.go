@@ -4,6 +4,8 @@ import "github.com/gin-gonic/gin"
 
 func SetUpApi(router *gin.Engine) {
 
+	root := router.Group("/api/v1")
+
 	// SetUp user api
-	setUserApi(router)
+	setUserApi(root)
 }

@@ -12,6 +12,8 @@ import (
 
 	"God/core/api"
 
+	"God/core/common"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
 	"github.com/spf13/viper"
@@ -38,7 +40,7 @@ func SetupServer() {
 	// Global middleware
 	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
 	// By default gin.DefaultWriter = os.Stdout
-	router.Use(gin.Logger())
+	//router.Use(gin.Logger())
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
@@ -70,10 +72,16 @@ func SetupServer() {
 		// server connections
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
+		} else {
+			log.Printf("%s\n\n%s\n", "Good bye, see you next time !!", fmt.Sprintf("%s: Running at %s", time.Now().Format("Mon, 02 Jan 2006 15:04:05 GMT"), port))
 		}
-		log.Printf("%s\n\n%s\n", banner, fmt.Sprintf("%s: Running at %s", time.Now().Format("Mon, 02 Jan 2006 15:04:05 GMT"), port))
 	}()
 
+	// shutdown server
+	shut_down(srv)
+}
+
+func shut_down(srv *http.Server) {
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
 	quit := make(chan os.Signal)
@@ -84,16 +92,28 @@ func SetupServer() {
 	<-quit
 	log.Println("Shutdown God Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("God Server Shutdown failed: ", err)
+		log.Fatal("God http Server Shutdown failed: ", err)
 	}
 	// catching ctx.Done(). timeout of 5 seconds.
 	select {
 	case <-ctx.Done():
-		// TODO this close somethings
-		log.Println("timeout of 5 seconds.")
+
+		log.Println("Close all resources ...")
+
+		if nil != common.DB {
+			if err := common.DB.Close(); nil != err {
+				log.Fatal("Failed to close db:", err)
+			}
+		}
+		if nil != common.Redis {
+			if err := common.Redis.Close(); nil != err {
+				log.Fatal("Failed to close redis:", err)
+			}
+		}
+		log.Println("Resources close success!!")
 	}
-	log.Println("Server exiting")
+	log.Println("Server success exit ...")
 }

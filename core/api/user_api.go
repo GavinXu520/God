@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func setUserApi(router *gin.Engine) {
+func setUserApi(rootApi *gin.RouterGroup) {
 
-	router.GET("/welcome", func(ctx *gin.Context) {
+	api := rootApi.Group("/user")
+
+	api.GET("/welcome", func(ctx *gin.Context) {
 		firstname := ctx.DefaultQuery("firstname", "Guest")
 		lastname := ctx.Query("lastname")
 

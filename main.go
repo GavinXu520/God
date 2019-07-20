@@ -2,16 +2,15 @@ package main
 
 import (
 	"God/core"
-	"God/core/init"
+	"God/core/common"
 )
 
 func init() {
-	init.SetupConfig()
-	//init.SetErrorDeal()
-	//init.SetUpLogger()
-	init.SetupDB()
-	init.SetUpRedis()
-	init.SetupTimer()
+	common.SetupConfig()
+	common.SetUpLogger()
+	//common.SetupDB()
+	//common.SetUpRedis()
+	common.SetupTimer()
 }
 
 func main() {
