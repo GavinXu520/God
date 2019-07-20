@@ -1,0 +1,27 @@
+{
+  "name": "god",
+  "version": "0.0.1",
+  "isDevelopment": true,
+  "server": {
+    "port": "9995",
+    "host": "0.0.0.0"
+  },
+  "redis": {
+    "addr": "192.168.1.204:6379",
+    "password": "123456",
+    "database": 2,
+    "maxActive": 50,
+    "idleTimeout": 60,
+    "prefix": "god:"
+  },
+  "db":{
+    "dialect":"mysql",
+    "host":"192.168.1.204",
+    "port":"3306",
+    "database": "d_aura_jike",
+    "user":"god",
+    "password":"123456",
+    "maxIdle": 50,
+    "maxOpen": 50
+  }
+}
