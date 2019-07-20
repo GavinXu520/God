@@ -11,11 +11,8 @@ var (
 )
 
 func SetUpLogger() {
-	//是否测试环境
 	isDevelopment := viper.GetBool("isDevelopment")
-	//文件路径
 	logFilePath := viper.GetString("log.path")
-	//获取系统名称
 	system := viper.GetString("name")
 
 	logLevel := viper.GetString("log.level")

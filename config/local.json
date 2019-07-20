@@ -7,7 +7,7 @@
     "host": "0.0.0.0"
   },
   "redis": {
-    "addr": "192.168.1.204:6379",
+    "addr": "0.0.0.0:6379",
     "password": "123456",
     "database": 2,
     "maxActive": 50,
@@ -16,9 +16,9 @@
   },
   "db":{
     "dialect":"mysql",
-    "host":"192.168.1.204",
+    "host":"0.0.0.0",
     "port":"3306",
-    "database": "d_aura_jike",
+    "database": "d_god",
     "user":"god",
     "password":"123456",
     "maxIdle": 50,

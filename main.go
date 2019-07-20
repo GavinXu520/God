@@ -14,5 +14,6 @@ func init() {
 }
 
 func main() {
+	// Start with: go run main.go -conf ./config/${fileName}.json
 	core.SetupServer()
 }
