@@ -8,7 +8,7 @@ import (
 func init() {
 	common.SetupConfig()
 	common.SetUpLogger()
-	//common.SetupDB()
+	common.SetupDB()
 	//common.SetUpRedis()
 	common.SetupTimer()
 }

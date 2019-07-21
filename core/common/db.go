@@ -1,12 +1,14 @@
 package common
 
 import (
-	"database/sql"
-
+	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 )
 
 func SetupDB() {
+
+	isDevelopment := viper.GetBool("isDevelopment")
+
 	// db config
 	dialect := viper.GetString("db.dialect")
 	user := viper.GetString("db.user")
@@ -19,22 +21,29 @@ func SetupDB() {
 
 	url := user + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=utf8&parseTime=True&loc=Local"
 
-	db, err := sql.Open(dialect, url)
+	//db, err := sql.Open(dialect, url)
+	db, err := gorm.Open(dialect, url)
 	if err != nil {
 		panic("Failed to connect database")
 	}
 
-	db.SetMaxIdleConns(maxIdle)
-	db.SetMaxOpenConns(maxOpen)
-	connectErr := db.Ping() // test db connect
+	db.LogMode(isDevelopment)
+	db.DB().SetMaxIdleConns(maxIdle)
+	db.DB().SetMaxOpenConns(maxOpen)
+
+	//db.SetMaxIdleConns(maxIdle)
+	//db.SetMaxOpenConns(maxOpen)
+	connectErr := db.DB().Ping() // test db connect
 	if connectErr != nil {
 		panic("Failed to test connect database, err: " + connectErr.Error())
 	}
 
 	// read and write is only one instance
 	DB = db
+
 }
 
 var (
-	DB *sql.DB
+	//DB *sql.DB
+	DB *gorm.DB
 )
