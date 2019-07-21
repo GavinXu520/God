@@ -74,7 +74,8 @@ func SetupServer() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to listen: %s\n", err)
 		} else {
-			log.Printf("%s\n\n%s\n", "Good bye, see you next time !!", fmt.Sprintf("%s: Running at %s:%s", time.Now().Format("Mon, 02 Jan 2006 15:04:05 GMT"), host, port))
+			log.Printf("%s\n\n%s\n", "Good bye, see you next time !!", fmt.Sprintf("%s: Running at %s:%s",
+				time.Now().Format("Mon, 02 Jan 2006 15:04:05 GMT"), host, port))
 		}
 	}()
 
