@@ -24,7 +24,7 @@ func SetupDB() {
 	//db, err := sql.Open(dialect, url)
 	db, err := gorm.Open(dialect, url)
 	if err != nil {
-		panic("Failed to connect database")
+		panic("Failed to connect database: " + err.Error())
 	}
 
 	db.LogMode(isDevelopment)

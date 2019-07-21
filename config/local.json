@@ -16,10 +16,10 @@
   },
   "db":{
     "dialect":"mysql",
-    "host":"0.0.0.0",
+    "host":"localhost",
     "port":"3306",
     "database": "d_god",
-    "user":"god",
+    "user":"root",
     "password":"123456",
     "maxIdle": 50,
     "maxOpen": 50

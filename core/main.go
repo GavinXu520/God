@@ -93,7 +93,7 @@ func shut_down(srv *http.Server) {
 	<-quit
 	log.Println("Shutdown God Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("God http Server Shutdown failed: ", err)

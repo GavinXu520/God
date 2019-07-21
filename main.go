@@ -3,13 +3,15 @@ package main
 import (
 	"God/core"
 	"God/core/common"
+
+	_ "github.com/go-sql-driver/mysql" // must init
 )
 
 func init() {
 	common.SetupConfig()
 	common.SetUpLogger()
-	//common.SetupDB()
-	//common.SetUpRedis()
+	common.SetupDB()
+	common.SetUpRedis()
 	common.SetupTimer()
 }
 

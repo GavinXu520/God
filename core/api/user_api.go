@@ -1,10 +1,20 @@
 package api
 
 import (
+	"bytes"
 	"net/http"
+
+	"God/core/controller"
 
 	"github.com/gin-gonic/gin"
 )
+
+type bodyLogWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+var userController = &controller.UserController{}
 
 func setUserApi(rootApi *gin.RouterGroup) {
 
@@ -17,4 +27,5 @@ func setUserApi(rootApi *gin.RouterGroup) {
 		ctx.String(http.StatusOK, "Hello %s %s", firstname, lastname)
 	})
 
+	api.GET("/queryUserInfo", userController.GetUserInfo)
 }
