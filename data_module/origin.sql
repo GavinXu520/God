@@ -133,3 +133,93 @@ create table `t_loan_info` (
 
 
 -- 还有： 登录记录表， 枚举选项表(考虑和 城市选项合在一起)
+
+DROP TABLE IF EXISTS `user_login_history`;
+CREATE TABLE `user_login_history` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT ,
+  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户账号',
+  `login_type` tinyint unsigned NOT NULL DEFAULT '0'  COMMENT '0:未知，1：password，2:手机验证码  3:第三方登陆',
+  `client_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '客户端ip',
+  `equipment_id` varchar(50) NOT NULL DEFAULT '' COMMENT '客户端设备id',
+  `channel_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '渠道 0:未知 1:运营  2：集客',
+  `term_type` tinyint unsigned NOT NULL DEFAULT '0'  COMMENT '0:未知，1：ios，2:android',
+  `version` varchar(32) NOT NULL DEFAULT '' COMMENT '客户端版本号',
+  `app_store_id` varchar(32) NOT NULL DEFAULT '' COMMENT '应用商店名称, 0-maizuo, m360, AppStore,…',
+  `city_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '城市_id',
+  `longitude` float  not null default '0.0' COMMENT 'gps 位置经度',
+  `latitude` float  not null default '0.0' COMMENT 'gps 位置纬度',
+  `created_at`            timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户登陆历史表';
+
+
+DROP TABLE IF EXISTS `user_bind_history`;
+CREATE TABLE `user_bind_history` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT ,
+  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户账号',
+  `open_id` varchar(50) NOT NULL DEFAULT '' COMMENT '第三方接入id',
+  `open_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '第三方接入类型',
+  `client_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '客户端ip',
+  `equipment_id` varchar(50) NOT NULL DEFAULT '' COMMENT '客户端设备id',
+  `channel_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '渠道 0:未知 1:运营  2：集客',
+  `term_type` tinyint unsigned NOT NULL DEFAULT '0'  COMMENT '0:未知，1：ios，2:android',
+  `version` varchar(32) NOT NULL DEFAULT '' COMMENT '客户端版本号',
+  `app_store_id` varchar(32) NOT NULL DEFAULT '' COMMENT '应用商店名称, 0-maizuo, m360, AppStore,…',
+  `city_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '城市_id',
+  `longitude` float  not null default '0.0' COMMENT 'gps 位置经度',
+  `latitude` float  not null default '0.0' COMMENT 'gps 位置纬度',
+  `created_at`            timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户绑定第三方账号历史表';
+
+
+DROP TABLE IF EXISTS `user_change_password_history`;
+CREATE TABLE `user_change_password_history` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT ,
+  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户账号',
+  `old_password` varchar(50) NOT NULL DEFAULT '' COMMENT '密码',
+  `client_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '客户端ip',
+  `equipment_id` varchar(50) NOT NULL DEFAULT '' COMMENT '客户端设备id',
+  `channel_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '渠道 0:未知 1:运营  2：集客',
+  `term_type` tinyint unsigned NOT NULL DEFAULT '0'  COMMENT '0:未知，1：ios，2:android',
+  `version` varchar(32) NOT NULL DEFAULT '' COMMENT '客户端版本号',
+  `app_store_id` varchar(32) NOT NULL DEFAULT '' COMMENT '应用商店名称, 0-maizuo, m360, AppStore,…',
+  `city_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '城市_id',
+  `longitude` float  not null default '0.0' COMMENT 'gps 位置经度',
+  `latitude` float  not null default '0.0' COMMENT 'gps 位置纬度',
+  `created_at`            timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户修改密码历史表';
+
+
+DROP TABLE IF EXISTS `user_change_pay_password_history`;
+CREATE TABLE `user_change_pay_password_history` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT ,
+  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户账号',
+  `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '手机',
+  `old_pay_password` varchar(50) NOT NULL DEFAULT '' COMMENT '支付密码',
+  `client_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '客户端ip',
+  `equipment_id` varchar(50) NOT NULL DEFAULT '' COMMENT '客户端设备id',
+  `channel_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '渠道 0:未知 1:运营  2：集客',
+  `term_type` tinyint unsigned NOT NULL DEFAULT '0'  COMMENT '0:未知，1：ios，2:android',
+  `version` varchar(32) NOT NULL DEFAULT '' COMMENT '客户端版本号',
+  `app_store_id` varchar(32) NOT NULL DEFAULT '' COMMENT '应用商店名称, 0-maizuo, m360, AppStore,…',
+  `city_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '城市_id',
+  `longitude` float  not null default '0.0' COMMENT 'gps 位置经度',
+  `latitude` float  not null default '0.0' COMMENT 'gps 位置纬度',
+  `created_at`            timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户修改支付密码历史表';
+
+
+DROP TABLE IF EXISTS `attr_value_info`;
+CREATE TABLE `attr_value_info` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'attr value id',
+  `attr_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'attr id',
+  `attr_value` text NOT NULL COMMENT '值',
+  `created_at`            timestamp not null default '0000-00-00 00:00:00' comment '创建时间',
+  `updated_at`            timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '修改时间',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
+  PRIMARY KEY (`id`),
+  KEY `idx_attr_id` (`attr_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  COMMENT='公共属性值表';
