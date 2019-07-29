@@ -10,11 +10,11 @@ use d_god;
 -- 设备信息表
 DROP TABLE IF EXISTS t_device_info;
 create table t_device_info (
-	id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   terminal_id int(1) NOT NULL COMMENT '平台Id, 0: 未知平台; 1: 安卓; 2: IOS; ',
   devicecode varchar(50) NOT NULL  DEFAULT '' COMMENT '设备编码',
   version varchar(10) NOT NULL  DEFAULT '' COMMENT '设备版本号',
-  	PRIMARY KEY (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -30,7 +30,7 @@ create table t_account_info (
   mobile varchar(20) NOT NULL  DEFAULT '' COMMENT '手机号码',
   mail varchar(30) NOT NULL  DEFAULT '' COMMENT '邮箱账户',
   img varchar(50) NOT NULL  DEFAULT '' COMMENT '头像链接',
-  created_at timestamp not null default '0000-00-00 00:00:00' comment '创建时间',
+  created_at timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
   updated_at timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '修改时间',
   status tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (id)
@@ -51,7 +51,7 @@ create table t_user_info (
   school varchar(60) NOT NULL  DEFAULT '' COMMENT '毕业学校',
   id_card_no varchar(20) NOT NULL DEFAULT '' COMMENT '身份证件号码',
   redit_card_no varchar(20) NOT NULL DEFAULT ''COMMENT '银行卡号码',
-  created_at timestamp not null default '0000-00-00 00:00:00' comment '创建时间',
+  created_at timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
   updated_at timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '修改时间',
   status tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (id)
