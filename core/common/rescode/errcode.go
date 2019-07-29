@@ -2,8 +2,6 @@ package rescode
 
 import (
 	"God/core/common"
-
-	"cuberl.com/test/src/entity"
 )
 
 type ErrCode struct {
@@ -19,8 +17,8 @@ func (e *ErrCode) Result(data interface{}) *common.Result {
 	}
 }
 
-func (e *ErrCode) ResultWithMsg(msg string) *entity.Result {
-	return &entity.Result{
+func (e *ErrCode) ResultWithMsg(msg string) *common.Result {
+	return &common.Result{
 		Status: e.Code,
 		Msg:    msg,
 		Data:   "",
