@@ -72,6 +72,12 @@ eg: go run main.go -conf ./config/local.json
 5. 进入容器 (用 redis-cli 登入)
     `docker exec -ti ${容器ID} redis-cli`
     或者
-    `winpty  docker exec -ti ${容器ID} redis-cli`    
+    `winpty  docker exec -ti ${容器ID} redis-cli`  
+    
+四、注意： 在连接 mysql后，执行建表语句时，报下面错误时：
+    `ERROR 1067 (42000)/ERROR 1292 (22007) Zero Date is not Accepted by Timestamp`   
+    请先直接执行：
+    `set global  sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';`
+    然后在执行建表语句即可。   
      
     
