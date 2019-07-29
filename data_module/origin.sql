@@ -18,7 +18,7 @@ create table t_device_info (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
--- 登录账户表 
+-- 登录账户表
 DROP TABLE IF EXISTS t_account_info;
 create table t_account_info (
 	id tinyint(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
@@ -56,25 +56,6 @@ create table t_user_info (
   status tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
--- 用户的拓展信息表
--- DROP TABLE IF EXISTS t_user_ex;
--- create table t_user_ex (
---   id tinyint(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
---   user_id tinyint(10) NOT NULL  DEFAULT 0 COMMENT '外建， 关联t_user_info的主键',
---   name varchar(10) NOT NULL  DEFAULT '' COMMENT '用户名',
---   gender tinyint(1) NOT NULL  DEFAULT 0 COMMENT '性别, 0: 未知性别; 1: 男; 2: 女',
---   age tinyint(3) NOT NULL  DEFAULT 0 COMMENT '年龄',
---   school varchar(60) NOT NULL  DEFAULT '' COMMENT '毕业学校',
---   company varchar(60) NOT NULL  DEFAULT '' COMMENT '就职公司',
---   home varchar(60) NOT NULL  DEFAULT '' COMMENT '家庭住址',
---   career tinyint(2) NOT NULL  DEFAULT 0 COMMENT '职业,',
---   marry tinyint(1)  NOT NULL  DEFAULT 0 COMMENT '是否已婚, 0: no; 1: yes'
---   PRIMARY KEY (id)
--- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
 
 -- 用户详细住址
 DROP TABLE IF EXISTS t_user_addr;
