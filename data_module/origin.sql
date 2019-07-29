@@ -108,7 +108,7 @@ create table `t_user_company` (
   `career` tinyint(2) NOT NULL  DEFAULT 0 COMMENT '职业： ',
   `income` varchar(32) NOT NULL DEFAULT '' COMMENT '月收入',
   `phone_no` varchar(20) NOT NULL DEFAULT '' COMMENT '办公电话',
-  `job_age` tinyint(4) NOT NULL DEFAULT '' COMMENT '工龄',
+  `job_age` tinyint(4) NOT NULL DEFAULT 0 COMMENT '工龄',
   `loan_purpose` varchar(100) NOT NULL DEFAULT '' COMMENT '贷款目的', 
   `created_at` timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
   `updated_at` timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '修改时间',
