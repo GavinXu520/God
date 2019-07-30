@@ -2,6 +2,7 @@ package util
 
 import (
 	"math/rand"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -37,4 +38,18 @@ func SubString(str string, start int, end int) string {
 		panic("end is wrong")
 	}
 	return string(rs[(start - int(1)):end])
+}
+
+//
+func CheckPhoneNo(phoneNo string) bool {
+	//reg := `^1([38][0-9]|14[57]|5[^4])\d{8}$`
+	reg := `^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9]))\d{8}$`
+	rgx := regexp.MustCompile(reg)
+	return rgx.MatchString(phoneNo)
+}
+
+func CheckIP(ip string) bool {
+	reg := `(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})(\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})){3}`
+	rgx := regexp.MustCompile(reg)
+	return rgx.MatchString(ip)
 }
