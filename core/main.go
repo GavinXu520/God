@@ -94,7 +94,9 @@ func shut_down(srv *http.Server) {
 	<-quit
 	log.Println("Shutdown God Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	shutDownDuration := viper.GetInt("server.shutDownDuration")
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(shutDownDuration)*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("God http Server Shutdown failed: ", err)

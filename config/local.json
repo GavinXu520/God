@@ -4,7 +4,8 @@
   "isDevelopment": true,
   "server": {
     "port": "9995",
-    "host": "0.0.0.0"
+    "host": "0.0.0.0",
+    "shutDownDuration": 1
   },
   "redis": {
     "addr": "0.0.0.0:6379",
