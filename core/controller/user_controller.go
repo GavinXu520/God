@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"God/core/common/rescode"
 	"God/core/entity"
 	"God/core/service"
 	"God/utils"
 	"net/http"
 	"strconv"
-	"time"
+
+	"God/core/common/comerr"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +20,9 @@ var userService = &service.UserService{}
 func (self *UserController) Register(ctx *gin.Context) {
 
 	ip := util.GetRealRemoteIp(ctx)
-	// TODO redis 锁校验IP
-	if !util.CheckIpRate("register", ip, time.Second*10) {
-		ctx.JSON(http.StatusOK, rescode.LIMIT_REQUEST.Result(nil))
+	// check IP rate
+	if !util.CheckIpRate("register", ip, 10) {
+		ctx.JSON(http.StatusOK, comerr.LIMIT_REQUEST.Result(nil))
 		return
 	}
 
@@ -36,12 +36,13 @@ func (self *UserController) Register(ctx *gin.Context) {
 	var res entity.RegisterReq
 
 	if err := ctx.BindJSON(&res); nil != err {
-		ctx.JSON(http.StatusOK, rescode.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
 		return
 	}
 
+	// check mobileNo
 	if !util.CheckPhoneNo(res.MobileNo) {
-		ctx.JSON(http.StatusOK, rescode.REQUEST_PARAM_ERR.ResultWithMsg("the mobile no. is wrong!!"))
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg("the mobile No. is wrong!!"))
 		return
 	}
 
@@ -54,12 +55,17 @@ func (self *UserController) Register(ctx *gin.Context) {
 	queue = queue.AppendSignData("loginPassword", res.LoginPassword)
 	queue = queue.AppendSignData("tradePassword", res.TradePassword)
 
+	// check sign
 	if !queue.CheckSign(sign) {
-		ctx.JSON(http.StatusOK, rescode.REQUEST_PARAM_ERR.ResultWithMsg("failed to check the sign!!"))
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg("failed to check the sign!!"))
 		return
 	}
 
-	// todo
+	// check timestamp
+	if err := util.CheckApiTimeStamp(sign, res.Timestamp); nil != err {
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg("failed to check the timestamp: "+err.Error()))
+		return
+	}
 
 }
 
@@ -68,14 +74,14 @@ func (self *UserController) GetUserInfo(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	if idInt, err := strconv.Atoi(id); nil != err {
-		ctx.JSON(http.StatusOK, rescode.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
 		return
 	} else {
 		userInfo, err := userService.GetUserInfo(uint32(idInt))
 		if nil != err {
-			ctx.JSON(http.StatusOK, rescode.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
+			ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
 			return
 		}
-		ctx.JSON(http.StatusOK, rescode.OK.Result(userInfo))
+		ctx.JSON(http.StatusOK, comerr.OK.Result(userInfo))
 	}
 }

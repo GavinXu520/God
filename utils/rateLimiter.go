@@ -7,7 +7,7 @@ import (
 
 func SetNX(businessName, uniqueKey string, second int64) bool {
 	key := businessName + ":" + uniqueKey
-	rs := common.Redis.SetNX(key, "", time.Duration(int64(time.Second)*second))
+	rs := common.Redis.SetNX(key, "", time.Duration(second)*time.Second)
 	if rs.Val() == true {
 		return true
 	}

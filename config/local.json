@@ -28,5 +28,9 @@
   "log": {
     "level": "info",
     "path": "/data/logs/god.log"
+  },
+  "common": {
+    "apiLimitAbs": 1,
+    "apiDuration": 300
   }
 }

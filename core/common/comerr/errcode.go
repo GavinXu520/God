@@ -1,4 +1,4 @@
-package rescode
+package comerr
 
 import (
 	"God/core/common"
