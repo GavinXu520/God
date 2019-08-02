@@ -9,7 +9,7 @@ use d_god;
 
 -- 用户账户信息表
 DROP TABLE IF EXISTS t_account_info;
-create table `t_account_info` (
+create table `account_info` (
 	`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
 	`user_id` bigint(20) NOT NULL  DEFAULT 0 COMMENT '外建， 关联t_user_info的主键',
   `account` varchar(30) NOT NULL  DEFAULT '' COMMENT '账户',
@@ -27,7 +27,7 @@ create table `t_account_info` (
 
 -- 用户主要信息表
 DROP TABLE IF EXISTS t_user_info;
-create table `t_user_info` (
+create table `user_info` (
 	`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `first_name` varchar(12) NOT NULL  DEFAULT '' COMMENT '用户真实姓',
   `last_name` varchar(12) NOT NULL  DEFAULT '' COMMENT '用户真实名',
@@ -51,7 +51,7 @@ create table `t_user_info` (
 
 -- 用户联系人表
 DROP TABLE IF EXISTS t_user_link;
-create table `t_user_link` (
+create table `user_link` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `user_id` bigint(20) NOT NULL  DEFAULT 0 COMMENT '外建， 关联t_user_info的主键',
   `first_link_name` varchar(32) NOT NULL  DEFAULT '' COMMENT '用户首要联系人姓名',
@@ -66,7 +66,7 @@ create table `t_user_link` (
 
 -- 用户详细住址表
 DROP TABLE IF EXISTS t_user_addr;
-create table `t_user_addr` (
+create table `user_addr` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `user_id` bigint(20) NOT NULL  DEFAULT 0 COMMENT '外建， 关联t_user_info的主键',
   `country` tinyint(2) NOT NULL DEFAULT 0 COMMENT '国家',
@@ -82,7 +82,7 @@ create table `t_user_addr` (
 
 -- 用户公司认证表
 DROP TABLE IF EXISTS t_user_company;
-create table `t_user_company` (
+create table `user_company` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `user_id` bigint(20) NOT NULL  DEFAULT 0 COMMENT '外建， 关联t_user_info的主键',
   `company` varchar(60) NOT NULL  DEFAULT '' COMMENT '就职公司',
@@ -101,7 +101,7 @@ create table `t_user_company` (
 
 -- 借款申请表
 DROP TABLE IF EXISTS t_loan_info;
-create table `t_loan_info` (
+create table `loan_info` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键Id',
   `user_id` varchar(10) NOT NULL  DEFAULT '' COMMENT '用户名',
   `loan_amount` bigint(20) NOT NULL DEFAULT 0 COMMENT '借款的钱, 单位: 分?',
