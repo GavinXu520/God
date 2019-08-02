@@ -82,7 +82,8 @@ eg: go run main.go -conf ./config/local.json
     
 五、使用工具根据sql语句直接生成go的struct
     目前只支持 win/mac/linux ,查看generate_tools目录下的三个二进制文件和config.toml配置文件
-    如windows上:
+    
+    windows上:
         将数据库的ip(主机)、port(端口)、user(连接数据库的账户)、password(连接数据库的密码)、database(数据库名称)、out_dir(生成的go文件输出目录) 等几个选项填写完毕后，
         将config.toml和gormt.exe放置同一个目录，在命令行执行: `./gormt.exe` 即可在 ${out_dir}目录下看到和数据库同名的xx.go文件，里面都是和数据表对应的struct 代码
     
