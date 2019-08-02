@@ -12,7 +12,7 @@ type UserService struct {
 var userDao = &dao.UserDao{}
 
 func (self *UserService) Register(req *entity.RegisterReq) {
-	user := &module.UserInfo{}
+	//user := &module.UserInfo{}
 
 }
 
