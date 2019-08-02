@@ -38,6 +38,7 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	}
 
 	_ = registerId
+	tx.Commit()
 	return nil
 }
 
