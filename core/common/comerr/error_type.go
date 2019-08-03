@@ -2,6 +2,7 @@ package comerr
 
 import "fmt"
 
+// customize business error type
 type BizErr struct {
 	err string
 }
@@ -17,5 +18,24 @@ func BizErrorf(format string, a ...interface{}) *BizErr {
 }
 
 func (b *BizErr) Error() string {
+	return b.err
+}
+
+// customize system error type
+type SysErr struct {
+	err string
+}
+
+func NewSysErr(err string) *SysErr {
+	return &SysErr{
+		err: err,
+	}
+}
+
+func SysErrorf(format string, a ...interface{}) *SysErr {
+	return NewSysErr(fmt.Sprintf(format, a...))
+}
+
+func (b *SysErr) Error() string {
 	return b.err
 }

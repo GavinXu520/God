@@ -3,7 +3,8 @@ package controller
 import (
 	"God/core/entity"
 	"God/core/service"
-	"God/utils"
+	util "God/utils"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -77,12 +78,12 @@ func (self *UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	if err := userService.Register(header, &req); nil != err {
+	if accountId, err := userService.Register(header, &req); nil != err {
 		ctx.JSON(http.StatusOK, comerr.SYSTEMBUSY_ERROR.ResultWithMsg("failed to register: "+err.Error()))
 		return
+	} else {
+		ctx.JSON(http.StatusOK, comerr.OK.ResultWithMsg(fmt.Sprintf("Register success, the accountId: %d", accountId)))
 	}
-	ctx.JSON(http.StatusOK, comerr.OK.Result(nil))
-	return
 }
 
 func (self *UserController) GetUserInfo(ctx *gin.Context) {
@@ -93,7 +94,7 @@ func (self *UserController) GetUserInfo(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
 		return
 	} else {
-		userInfo, err := userService.GetUserInfo(uint32(idInt))
+		userInfo, err := userService.GetUserBase(uint32(idInt))
 		if nil != err {
 			ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
 			return

@@ -2,6 +2,7 @@ package service
 
 import (
 	"God/core/common"
+	"God/core/common/comerr"
 	"God/core/dao"
 	"God/core/entity"
 	"God/core/module"
@@ -12,21 +13,29 @@ type UserService struct {
 
 var userDao = &dao.UserDao{}
 
-func (self *UserService) Register(header *entity.ReqHeader, req *entity.RegisterReq) error {
+func (self *UserService) Register(header *entity.ReqHeader, req *entity.RegisterReq) (int, error) {
 
 	tx := common.DB.Begin()
 	if nil != tx.Error {
-		return tx.Error
+		return 0, tx.Error
 	}
 	defer tx.Rollback()
 
-	userId, err := userDao.AddUserInfo(tx, &module.UserInfo{})
+	hasRegister, err := userDao.HasAccountByMobile(tx, req.MobileNo)
 	if nil != err {
-		common.Logger.Error("Failed to Register: Create userInfo is failed, err", err)
-		return err
+		common.Logger.Error("Failed to Register: Check Account has register is failed, err", err)
+		return 0, err
 	}
+	if hasRegister {
+		common.Logger.Error("Failed to Register: The Account had been register !!")
+		return 0, comerr.BizErrorf("this mobile had been register, mobileNo: %s", req.MobileNo)
+	}
+
+	accountId, err := userDao.AddAccount(tx, &module.UserAccount{Mobile: req.MobileNo,
+		LoginPwd: req.LoginPassword, PayPwd: req.TradePassword})
+
 	register := &module.UserRegisterInfo{
-		UserID:     userId,
+		UserID:     accountId,
 		TerminalID: header.Terminalid,
 		Devicecode: header.Devicecode,
 		Version:    header.Version,
@@ -34,14 +43,13 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	registerId, err := userDao.AddRegisterInfo(tx, register)
 	if nil != err {
 		common.Logger.Error("Failed to Register: Create registerInfo is failed, err", err)
-		return err
+		return 0, err
 	}
-
-	_ = registerId
 	tx.Commit()
-	return nil
+	common.Logger.Info("Register Success", "accountId", accountId, "registerId", registerId)
+	return accountId, nil
 }
 
-func (self *UserService) GetUserInfo(id uint32) (*module.UserInfo, error) {
-	return userDao.GetUserInfo(id)
+func (self *UserService) GetUserBase(id uint32) (*module.UserBase, error) {
+	return userDao.GetUserBase(id)
 }
