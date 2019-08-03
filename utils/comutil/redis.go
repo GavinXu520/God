@@ -9,3 +9,8 @@ const (
 	REGISTER = "register"
 	LOGIN    = "login"
 )
+
+const (
+	TOKEN   = "token"
+	SESSION = "session"
+)

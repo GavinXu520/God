@@ -78,8 +78,8 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	sessionId := util.RandStr()
 
 	// store the token and sessionId
-	util.SetKV(comutil.LOGIN, token, sessionId, tokenLimit)
-	util.SetKV(comutil.LOGIN, sessionId, fmt.Sprint(accountId), sessionLimit)
+	util.SetKV(comutil.TOKEN, token, sessionId, tokenLimit)
+	util.SetKV(comutil.SESSION, sessionId, fmt.Sprint(accountId), sessionLimit)
 
 	return &entity.LoginResp{
 		TimeStamp: int(time.Now().Unix()),
@@ -124,8 +124,8 @@ func (self *UserService) LoginByPwd(header *entity.ReqHeader, req *entity.LoginR
 	sessionId := util.RandStr()
 
 	// store the token and sessionId
-	util.SetKV(comutil.LOGIN, token, sessionId, tokenLimit)
-	util.SetKV(comutil.LOGIN, sessionId, fmt.Sprint(account.ID), sessionLimit)
+	util.SetKV(comutil.TOKEN, token, sessionId, tokenLimit)
+	util.SetKV(comutil.SESSION, sessionId, fmt.Sprint(account.ID), sessionLimit)
 
 	return &entity.LoginResp{
 		TimeStamp: int(time.Now().Unix()),

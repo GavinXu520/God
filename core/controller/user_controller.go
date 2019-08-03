@@ -45,10 +45,10 @@ func getHeader(ctx *gin.Context) (*entity.ReqHeader, error) {
 	}, nil
 }
 
-func commonCheck(ctx *gin.Context, data *checkData) bool {
+func commonCheck(ctx *gin.Context, data *checkData, ip_limie_prefix string) bool {
 	ip := util.GetRealRemoteIp(ctx)
 	// check IP rate per 10s
-	if !util.CheckIpRate(comutil.REGISTER, ip, 10) {
+	if !util.CheckIpRate(ip_limie_prefix, ip, 10) {
 		ctx.JSON(http.StatusOK, comerr.LIMIT_REQUEST.ResultEmpty())
 		return false
 	}
@@ -74,7 +74,7 @@ func (self *UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}) {
+	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}, comutil.REGISTER) {
 		return
 	}
 
@@ -129,7 +129,7 @@ func (self *UserController) LoginByPwd(ctx *gin.Context) {
 		return
 	}
 
-	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}) {
+	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}, comutil.LOGIN) {
 		return
 	}
 
