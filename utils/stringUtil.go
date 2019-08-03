@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 // Generate str character by rand
@@ -52,4 +53,8 @@ func CheckIP(ip string) bool {
 	reg := `(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})(\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})){3}`
 	rgx := regexp.MustCompile(reg)
 	return rgx.MatchString(ip)
+}
+
+func CheckPwdLen(pwd string, limit int) bool {
+	return utf8.RuneCountInString(pwd) == limit
 }

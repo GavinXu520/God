@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/spf13/viper"
+
 	"God/core/common/comerr"
 
 	"github.com/gin-gonic/gin"
@@ -54,6 +56,17 @@ func (self *UserController) Register(ctx *gin.Context) {
 	// check mobileNo
 	if !util.CheckPhoneNo(req.MobileNo) {
 		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg("the mobile No. is wrong!!"))
+		return
+	}
+
+	pwdLenLimit := viper.GetInt("common.pwdLenLimit")
+	// check pwds length
+	if !util.CheckPwdLen(req.LoginPassword, pwdLenLimit) {
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(fmt.Sprintf("the LoginPassword length is wrong, must be %d char!!", pwdLenLimit)))
+		return
+	}
+	if !util.CheckPwdLen(req.TradePassword, pwdLenLimit) {
+		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(fmt.Sprintf("the TradePassword length is wrong, must be %d char!!", pwdLenLimit)))
 		return
 	}
 
