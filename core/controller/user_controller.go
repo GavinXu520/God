@@ -95,10 +95,7 @@ func (self *UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	queue := &entity.SignQueue{
-		arr:  make([]string, 0),
-		dict: make(map[string]string, 0),
-	}
+	queue := entity.NewSignQueue()
 	queue.AppendSignData("terminalid", fmt.Sprint(header.Terminalid))
 	queue.AppendSignData("devicecode", header.Devicecode)
 	queue.AppendSignData("version", header.Version)
@@ -146,10 +143,7 @@ func (self *UserController) LoginByPwd(ctx *gin.Context) {
 		return
 	}
 
-	queue := &entity.SignQueue{
-		arr:  make([]string, 0),
-		dict: make(map[string]string, 0),
-	}
+	queue := entity.NewSignQueue()
 	queue.AppendSignData("terminalid", fmt.Sprint(header.Terminalid))
 	queue.AppendSignData("devicecode", header.Devicecode)
 	queue.AppendSignData("version", header.Version)

@@ -10,6 +10,13 @@ type SignQueue struct {
 	dict map[string]string
 }
 
+func NewSignQueue() *SignQueue {
+	return &SignQueue{
+		arr:  make([]string, 0),
+		dict: make(map[string]string, 0),
+	}
+}
+
 // TODO
 func (queue SignQueue) CheckSign(sign string) bool {
 	// todo test
