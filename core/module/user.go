@@ -26,9 +26,9 @@ type UserBase struct {
 	LastName   string    `gorm:"column:last_name;type:varchar(12);not null" json:"last_name"`       //	用户真实名
 	FrontalImg string    `gorm:"column:frontal_img;type:varchar(100);not null" json:"frontal_img"`  //	正面照链接
 	HandImg    string    `gorm:"column:hand_img;type:varchar(100);not null" json:"hand_img"`        //	手拿照链接
-	Gender     bool      `json:"gender" gorm:"column:gender;type:tinyint(1);not null"`              //	性别, 0: 未知性别; 1: 男; 2: 女
+	Gender     int       `json:"gender" gorm:"column:gender;type:tinyint(1);not null"`              //	性别, 0: 未知性别; 1: 男; 2: 女
 	Birthday   time.Time `gorm:"column:birthday;type:date;not null" json:"birthday"`                //	生日
-	Marriage   bool      `gorm:"column:marriage;type:tinyint(1);not null" json:"marriage"`          //	是否已婚, 0: no; 1: yes
+	Marriage   int       `gorm:"column:marriage;type:tinyint(1);not null" json:"marriage"`          //	是否已婚, 0: no; 1: yes
 	Education  int       `gorm:"column:education;type:tinyint(4);not null" json:"education"`        //	教育水平
 	School     string    `gorm:"column:school;type:varchar(60);not null" json:"school"`             //	毕业学校
 	IDentityNo string    `gorm:"column:identity_no;type:varchar(20);not null" json:"identity_no"`   //	身份证件号码
@@ -75,7 +75,7 @@ func (*UserLink) TableName() string {
 type UserLoginHistory struct {
 	ID         int    `gorm:"primary_key;column:id;type:bigint(20) unsigned;not null" json:"-"`      //
 	UserID     int    `gorm:"column:user_id;type:bigint(20);not null" json:"user_id"`                //	外建， 关联 user_account 的主键
-	LoginType  bool   `gorm:"column:login_type;type:tinyint(1) unsigned;not null" json:"login_type"` //	0:未知，1：password，2:手机验证码  3:第三方登陆
+	LoginType  int    `gorm:"column:login_type;type:tinyint(1) unsigned;not null" json:"login_type"` //	0:未知，1：password，2:手机验证码  3:第三方登陆
 	TerminalID int    `json:"terminal_id" gorm:"column:terminal_id;type:int(1);not null"`            //	平台Id, 0: 未知平台; 1: 安卓; 2: IOS;
 	Devicecode string `gorm:"column:devicecode;type:varchar(50);not null" json:"devicecode"`         //	设备编码
 	Version    string `gorm:"column:version;type:varchar(10);not null" json:"version"`               //	设备版本号

@@ -58,3 +58,20 @@ func (self *UserDao) GetUserBase(id uint32) (*module.UserBase, error) {
 	}
 	return user, err
 }
+
+func (self *UserDao) GetAccountByMobileAndPwd(mobileNo, pwd string) (*module.UserAccount, error) {
+
+	user := &module.UserAccount{}
+	err := common.DB.Model(user).Where("mobile = ? AND login_pwd = ?", mobileNo, pwd).Find(user).Error
+	if nil != err {
+		return nil, err
+	}
+	return user, err
+}
+
+func (self *UserDao) AddUserLoginHistory(tx *gorm.DB, loginHistory *module.UserLoginHistory) (int, error) {
+	if err := tx.Create(loginHistory).Error; nil != err {
+		return 0, err
+	}
+	return loginHistory.ID, nil
+}

@@ -2,52 +2,63 @@ package comerr
 
 import (
 	"God/core/common"
+	"God/utils"
 )
 
 type ErrCode struct {
-	Code int
-	Msg  string
+	Code    string
+	Message string
+	Success bool
 }
 
-func (e *ErrCode) Result(data interface{}) *common.Result {
+func (e *ErrCode) Result(data interface{}, sign string) *common.Result {
 	return &common.Result{
-		Status: e.Code,
-		Msg:    e.Msg,
-		Data:   data,
+		Code:    e.Code,
+		Message: e.Message,
+		Success: e.Success,
+		Data:    data,
+		Sign:    sign,
 	}
 }
 
 func (e *ErrCode) ResultEmpty() *common.Result {
 	return &common.Result{
-		Status: e.Code,
-		Msg:    e.Msg,
-		Data:   "",
+		Code:    e.Code,
+		Message: e.Message,
+		Success: e.Success,
+		Data:    "",
+		Sign:    util.Md5(""),
 	}
 }
 
 func (e *ErrCode) ResultWithMsg(msg string) *common.Result {
 	return &common.Result{
-		Status: e.Code,
-		Msg:    msg,
-		Data:   "",
+		Code:    e.Code,
+		Message: msg,
+		Success: e.Success,
+		Data:    "",
+		Sign:    util.Md5(""),
 	}
 }
 
-func (e *ErrCode) ReplaceMsg(msg string) *ErrCode {
-	return &ErrCode{
-		Code: e.Code,
-		Msg:  msg,
+func (e *ErrCode) ResultWithMsgData(msg string, data interface{}) *common.Result {
+	return &common.Result{
+		Code:    e.Code,
+		Message: msg,
+		Success: e.Success,
+		Data:    data,
+		Sign:    util.Md5(""),
 	}
 }
 
 var (
-	OK = &ErrCode{0, "ok"}
+	OK = &ErrCode{"0000", "ok", true}
 
-	SYSTEMBUSY_ERROR = &ErrCode{-1, "system error"}
+	SYSTEMBUSY_ERROR = &ErrCode{"1000", "system error", false}
 
-	REQUEST_PARAM_ERR = &ErrCode{1005, "request params valid"}
+	REQUEST_PARAM_ERR = &ErrCode{"1005", "request params valid", false}
 
-	LIMIT_REQUEST = &ErrCode{1014, "request is frequent"}
+	LIMIT_REQUEST = &ErrCode{"1014", "request is frequent", false}
 
-	EMPTY_RESULT = &ErrCode{6003, "result is empty"}
+	EMPTY_RESULT = &ErrCode{"6003", "result is empty", false}
 )

@@ -32,6 +32,8 @@
   "common": {
     "apiLimitAbs": 10,
     "apiDuration": 300,
-    "pwdLenLimit": 6
+    "pwdLenLimit": 6,
+    "tokenDuration": 259200,
+    "sessionDuration": 3600
   }
 }

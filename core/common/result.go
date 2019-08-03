@@ -1,17 +1,9 @@
 package common
 
 type Result struct {
-	Status int         `json:"status"`
-	Data   interface{} `json:"data"`
-	Msg    string      `json:"msg"`
-}
-
-type OK_Result struct {
-	StaStatus int         `json:"status"`
-	Data      interface{} `json:"data"`
-}
-
-type Failed_Result struct {
-	Status int    `json:"status"`
-	Msg    string `json:"msg"`
+	Code    string      `json:"code"`
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
+	Success bool        `json:"success"`
+	Sign    string      `json:"sign"`
 }
