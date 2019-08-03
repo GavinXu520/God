@@ -96,8 +96,8 @@ func (self *UserController) Register(ctx *gin.Context) {
 	}
 
 	queue := &entity.SignQueue{
-		Arr:  make([]string, 0),
-		Dict: make(map[string]string, 0),
+		arr:  make([]string, 0),
+		dict: make(map[string]string, 0),
 	}
 	queue.AppendSignData("terminalid", fmt.Sprint(header.Terminalid))
 	queue.AppendSignData("devicecode", header.Devicecode)
@@ -147,8 +147,8 @@ func (self *UserController) LoginByPwd(ctx *gin.Context) {
 	}
 
 	queue := &entity.SignQueue{
-		Arr:  make([]string, 0),
-		Dict: make(map[string]string, 0),
+		arr:  make([]string, 0),
+		dict: make(map[string]string, 0),
 	}
 	queue.AppendSignData("terminalid", fmt.Sprint(header.Terminalid))
 	queue.AppendSignData("devicecode", header.Devicecode)
