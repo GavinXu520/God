@@ -18,12 +18,12 @@ var userDao = &dao.UserDao{}
 
 func (self *UserService) Register(header *entity.ReqHeader, req *entity.RegisterReq) (int, error) {
 
-	//tx := common.DB.Begin()
-	tx := common.DB
+	tx := common.DB.Begin()
+	//tx := common.DB
 	if nil != tx.Error {
 		return 0, tx.Error
 	}
-	//defer tx.Rollback()
+	defer tx.Rollback()
 
 	hasRegister, err := userDao.HasAccountByMobile(tx, req.MobileNo)
 	if nil != err {
@@ -38,7 +38,6 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	// generate a nick
 	randomStr := util.RandString(int(6))
 	subStr := util.SubString(req.MobileNo, int(8), int(11))
-	//规则 maizuo + 随机6位 + 手机后4位
 	nick_name := "god" + randomStr + subStr
 
 	account := &module.UserAccount{Mobile: req.MobileNo, Nick: nick_name,
@@ -61,7 +60,7 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 		common.Logger.Error("Failed to Register: Create registerInfo is failed, err", err)
 		return 0, err
 	}
-	//tx.Commit()
+	tx.Commit()
 	common.Logger.Info("Register Success", "accountId", accountId, "registerId", registerId)
 	return accountId, nil
 }
