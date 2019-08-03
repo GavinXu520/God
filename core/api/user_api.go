@@ -12,5 +12,7 @@ func setUserApi(rootApi *gin.RouterGroup) {
 
 	api := rootApi.Group("/user")
 
-	api.POST("/register", userController.GetUserInfo)
+	api.POST("/register", userController.Register)
+
+	api.GET("/queryUserBase", userController.GetUserBase)
 }

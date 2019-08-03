@@ -6,6 +6,8 @@ import (
 	"God/core/dao"
 	"God/core/entity"
 	"God/core/module"
+
+	"github.com/jinzhu/gorm"
 )
 
 type UserService struct {
@@ -51,5 +53,12 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 }
 
 func (self *UserService) GetUserBase(id uint32) (*module.UserBase, error) {
-	return userDao.GetUserBase(id)
+	user, err := userDao.GetUserBase(id)
+	if nil != err && err != gorm.ErrRecordNotFound {
+		return nil, err
+	} else if nil != err && err == gorm.ErrRecordNotFound {
+		return nil, nil
+	} else {
+		return user, nil
+	}
 }

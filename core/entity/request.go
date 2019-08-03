@@ -6,7 +6,7 @@ package entity
 //}
 
 type RegisterReq struct {
-	Timestamp     string `json:"timestamp"`
+	Timestamp     int    `json:"timestamp"`
 	MobileNo      string `json:"mobileNo"`
 	LoginPassword string `json:"loginPassword"`
 	TradePassword string `json:"tradePassword"` // 支付密码

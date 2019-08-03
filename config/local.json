@@ -30,7 +30,7 @@
     "path": "/data/logs/god.log"
   },
   "common": {
-    "apiLimitAbs": 1,
+    "apiLimitAbs": 10,
     "apiDuration": 300
   }
 }

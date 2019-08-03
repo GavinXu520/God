@@ -17,6 +17,14 @@ func (e *ErrCode) Result(data interface{}) *common.Result {
 	}
 }
 
+func (e *ErrCode) ResultEmpty() *common.Result {
+	return &common.Result{
+		Status: e.Code,
+		Msg:    e.Msg,
+		Data:   "",
+	}
+}
+
 func (e *ErrCode) ResultWithMsg(msg string) *common.Result {
 	return &common.Result{
 		Status: e.Code,
@@ -40,4 +48,6 @@ var (
 	REQUEST_PARAM_ERR = &ErrCode{1005, "request params valid"}
 
 	LIMIT_REQUEST = &ErrCode{1014, "request is frequent"}
+
+	EMPTY_RESULT = &ErrCode{6003, "result is empty"}
 )

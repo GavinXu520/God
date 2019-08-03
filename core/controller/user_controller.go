@@ -61,7 +61,7 @@ func (self *UserController) Register(ctx *gin.Context) {
 	queue = queue.AppendSignData("terminalid", terminalidStr)
 	queue = queue.AppendSignData("devicecode", devicecodeStr)
 	queue = queue.AppendSignData("version", versionStr)
-	queue = queue.AppendSignData("timestamp", req.Timestamp)
+	queue = queue.AppendSignData("timestamp", fmt.Sprint(req.Timestamp))
 	queue = queue.AppendSignData("mobileNo", req.MobileNo)
 	queue = queue.AppendSignData("loginPassword", req.LoginPassword)
 	queue = queue.AppendSignData("tradePassword", req.TradePassword)
@@ -86,7 +86,7 @@ func (self *UserController) Register(ctx *gin.Context) {
 	}
 }
 
-func (self *UserController) GetUserInfo(ctx *gin.Context) {
+func (self *UserController) GetUserBase(ctx *gin.Context) {
 
 	id := ctx.Query("id")
 
@@ -96,9 +96,12 @@ func (self *UserController) GetUserInfo(ctx *gin.Context) {
 	} else {
 		userInfo, err := userService.GetUserBase(uint32(idInt))
 		if nil != err {
-			ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg(err.Error()))
+			ctx.JSON(http.StatusOK, comerr.SYSTEMBUSY_ERROR.ResultWithMsg(err.Error()))
 			return
+		} else if nil == userInfo {
+			ctx.JSON(http.StatusOK, comerr.EMPTY_RESULT.ResultEmpty())
+		} else {
+			ctx.JSON(http.StatusOK, comerr.OK.Result(userInfo))
 		}
-		ctx.JSON(http.StatusOK, comerr.OK.Result(userInfo))
 	}
 }

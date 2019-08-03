@@ -7,7 +7,7 @@ type SignQueue []string
 // TODO
 func (queue SignQueue) CheckSign(sign string) bool {
 
-	return false
+	return true
 }
 
 func (queue SignQueue) AppendSignData(key, val string) SignQueue {

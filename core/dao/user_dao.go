@@ -12,7 +12,7 @@ type UserDao struct {
 
 func (self *UserDao) HasAccountByMobile(tx *gorm.DB, mobileNo string) (bool, error) {
 	var account module.UserAccount
-	err := tx.Select("id").Find(&account).Where("mobile = ?", mobileNo).Error
+	err := tx.Model(&account).Select("id").Where("mobile = ?", mobileNo).Error
 	if nil != err {
 		return false, err
 	}
@@ -51,7 +51,7 @@ func (self *UserDao) AddRegisterInfo(tx *gorm.DB, register *module.UserRegisterI
 func (self *UserDao) GetUserBase(id uint32) (*module.UserBase, error) {
 
 	user := &module.UserBase{}
-	err := common.DB.Model(user).Where("id = ? ", id).Error
+	err := common.DB.Model(user).Where("id = ? ", id).Find(user).Error
 	if nil != err {
 		return nil, err
 	}

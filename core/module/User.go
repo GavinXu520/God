@@ -42,7 +42,7 @@ type UserBase struct {
 }
 
 func (*UserBase) TableName() string {
-	return "t_user_info"
+	return "user_base"
 }
 
 //	用户注册信息表
