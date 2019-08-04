@@ -74,7 +74,7 @@ func (self *UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}, comutil.REGISTER) {
+	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign, Timestamp: req.Data.Timestamp}, comutil.REGISTER) {
 		return
 	}
 
@@ -110,11 +110,11 @@ func (self *UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	if accountId, err := userService.Register(header, &req); nil != err {
+	if res, err := userService.Register(header, &req); nil != err {
 		ctx.JSON(http.StatusOK, comerr.SYSTEMBUSY_ERROR.ResultWithMsg("failed to register: "+err.Error()))
 		return
 	} else {
-		ctx.JSON(http.StatusOK, comerr.OK.ResultWithMsgData("Register success", accountId))
+		ctx.JSON(http.StatusOK, comerr.OK.ResultWithMsgData("Register success", res))
 	}
 }
 
@@ -126,7 +126,7 @@ func (self *UserController) LoginByPwd(ctx *gin.Context) {
 		return
 	}
 
-	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign}, comutil.LOGIN) {
+	if !commonCheck(ctx, &checkData{MobileNo: req.Data.MobileNo, Sign: req.Sign, Timestamp: req.Data.Timestamp}, comutil.LOGIN) {
 		return
 	}
 
@@ -156,7 +156,12 @@ func (self *UserController) LoginByPwd(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, comerr.REQUEST_PARAM_ERR.ResultWithMsg("failed to check the sign!!"))
 		return
 	}
-
+	if res, err := userService.LoginByPwd(header, &req); nil != err {
+		ctx.JSON(http.StatusOK, comerr.SYSTEMBUSY_ERROR.ResultWithMsg("failed to login: "+err.Error()))
+		return
+	} else {
+		ctx.JSON(http.StatusOK, comerr.OK.ResultWithMsgData("Login success", res))
+	}
 }
 
 func (self *UserController) GetUserBase(ctx *gin.Context) {

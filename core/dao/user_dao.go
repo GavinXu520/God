@@ -59,10 +59,10 @@ func (self *UserDao) GetUserBase(id uint32) (*module.UserBase, error) {
 	return user, err
 }
 
-func (self *UserDao) GetAccountByMobileAndPwd(mobileNo, pwd string) (*module.UserAccount, error) {
+func (self *UserDao) GetAccountByMobileAndPwd(tx *gorm.DB, mobileNo, pwd string) (*module.UserAccount, error) {
 
 	user := &module.UserAccount{}
-	err := common.DB.Model(user).Where("mobile = ? AND login_pwd = ?", mobileNo, pwd).Find(user).Error
+	err := tx.Model(user).Where("mobile = ? AND login_pwd = ?", mobileNo, pwd).Find(user).Error
 	if nil != err {
 		return nil, err
 	}

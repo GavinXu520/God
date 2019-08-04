@@ -6,7 +6,7 @@ import (
 	"God/core/dao"
 	"God/core/entity"
 	"God/core/module"
-	util "God/utils"
+	"God/utils"
 
 	"God/utils/comutil"
 	"fmt"
@@ -14,8 +14,13 @@ import (
 
 	"God/core/common/enum"
 
+	"encoding/json"
+
+	"strconv"
+
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
+	redisErr "gopkg.in/redis.v4"
 )
 
 type UserService struct {
@@ -69,18 +74,7 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	tx.Commit()
 	common.Logger.Info("Register Success", "accountId", accountId, "registerId", registerId)
 
-	// default is three days
-	tokenLimit := viper.GetInt("common.tokenDuration")
-	// default is a hour
-	sessionLimit := viper.GetInt("common.sessionDuration")
-	// generate the token and sessionId
-	token := util.RandSeq(19)
-	sessionId := util.RandStr()
-
-	// store the token and sessionId
-	util.SetKV(comutil.TOKEN, token, sessionId, tokenLimit)
-	util.SetKV(comutil.SESSION, sessionId, fmt.Sprint(accountId), sessionLimit)
-
+	token, sessionId := storeLogin(req.Data.MobileNo, fmt.Sprint(accountId))
 	return &entity.LoginResp{
 		TimeStamp: int(time.Now().Unix()),
 		AccountId: accountId,
@@ -89,11 +83,64 @@ func (self *UserService) Register(header *entity.ReqHeader, req *entity.Register
 	}, nil
 }
 
-func (self *UserService) LoginByPwd(header *entity.ReqHeader, req *entity.LoginReq) (*entity.LoginResp, error) {
-	tx := common.DB.Begin()
-	defer tx.Rollback()
+func checkLoginByMobile(mobile string) (*entity.LoginResp, error) {
+	if b, err := util.GetKV(comutil.Login_mobile, mobile); nil != err {
+		return nil, err
+	} else {
+		var m struct {
+			Token     string
+			SessionId string
+		}
+		if err := json.Unmarshal([]byte(b), &m); nil != err {
+			return nil, err
+		}
+		sessionId, err := util.GetKV(comutil.TOKEN, m.Token)
+		if nil != err {
+			return nil, err
+		}
+		accountId, err := util.GetKV(comutil.SESSION, sessionId)
+		if nil != err {
+			return nil, err
+		}
 
-	account, err := userDao.GetAccountByMobileAndPwd(req.Data.MobileNo, req.Data.LoginPassword)
+		// default is three days
+		tokenLimit := viper.GetInt("common.tokenDuration")
+		// default is a hour
+		sessionLimit := viper.GetInt("common.sessionDuration")
+		util.ExpireKV(comutil.Login_mobile, mobile, sessionLimit)
+		util.ExpireKV(comutil.TOKEN, m.Token, tokenLimit)
+		util.ExpireKV(comutil.SESSION, sessionId, sessionLimit)
+		id, _ := strconv.Atoi(accountId)
+		return &entity.LoginResp{
+			TimeStamp: int(time.Now().Unix()),
+			AccountId: id,
+			Token:     m.Token,
+			SessionId: sessionId,
+		}, nil
+	}
+}
+
+func storeLogin(mobile, accountId string) (string, string) {
+	tokenLimit := viper.GetInt("common.tokenDuration")
+	sessionLimit := viper.GetInt("common.sessionDuration")
+	// generate the token and sessionId
+	token := util.RandSeq(19)
+	sessionId := util.RandStr()
+	b, _ := json.Marshal(struct {
+		Token     string
+		SessionId string
+	}{Token: token, SessionId: sessionId})
+	util.SetKV(comutil.Login_mobile, mobile, string(b), sessionLimit)
+	util.SetKV(comutil.TOKEN, token, sessionId, tokenLimit)
+	util.SetKV(comutil.SESSION, sessionId, accountId, sessionLimit)
+	return token, sessionId
+}
+
+func (self *UserService) LoginByPwd(header *entity.ReqHeader, req *entity.LoginReq) (*entity.LoginResp, error) {
+
+	db := common.DB
+
+	account, err := userDao.GetAccountByMobileAndPwd(db, req.Data.MobileNo, req.Data.LoginPassword)
 	if nil != err {
 		common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, mobileNo: %s, err: %v", req.Data.MobileNo, err))
 		return nil, err
@@ -103,36 +150,42 @@ func (self *UserService) LoginByPwd(header *entity.ReqHeader, req *entity.LoginR
 		return nil, nil
 	}
 
-	// add login history
-	history := &module.UserLoginHistory{
-		UserID:     account.ID,
-		LoginType:  enum.Pwd,
-		TerminalID: header.Terminalid,
-		Devicecode: header.Devicecode,
-		Version:    header.Version,
-		// cityId ?
-	}
-	if _, err := userDao.AddUserLoginHistory(tx, history); nil != err {
-		common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, add login history is failed, mobile: %s, err: %v", req.Data.MobileNo, err))
+	// query redis
+	if resp, err := checkLoginByMobile(req.Data.MobileNo); nil != err && err.Error() != redisErr.Nil.Error() {
 		return nil, err
+	} else if nil != resp {
+
+		if resp.AccountId != account.ID {
+			common.Logger.Error(fmt.Sprintf("Failed to login, the db accountId deference by redis accountId, mobile: %s, db accountId: %d, redis accountId: %d",
+				req.Data.MobileNo, account.ID, resp.AccountId))
+			return nil, comerr.BizErrorf("Somethings is wrong for pwd login")
+		}
+		common.Logger.Info(fmt.Sprintf("The mobile had been login, mobileNo: %s", req.Data.MobileNo))
+		return resp, nil
+	} else {
+
+		// add login history
+		history := &module.UserLoginHistory{
+			UserID:     account.ID,
+			LoginType:  enum.Pwd,
+			TerminalID: header.Terminalid,
+			Devicecode: header.Devicecode,
+			Version:    header.Version,
+			// cityId ?
+		}
+		if _, err := userDao.AddUserLoginHistory(db, history); nil != err {
+			common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, add login history is failed, mobile: %s, err: %v", req.Data.MobileNo, err))
+			return nil, err
+		}
+		// store the token and sessionId
+		token, sessionId := storeLogin(req.Data.MobileNo, fmt.Sprint(account.ID))
+		return &entity.LoginResp{
+			TimeStamp: int(time.Now().Unix()),
+			AccountId: account.ID,
+			Token:     token,
+			SessionId: sessionId,
+		}, nil
 	}
-
-	tokenLimit := viper.GetInt("common.tokenDuration")
-	sessionLimit := viper.GetInt("common.sessionDuration")
-	// generate the token and sessionId
-	token := util.RandSeq(19)
-	sessionId := util.RandStr()
-
-	// store the token and sessionId
-	util.SetKV(comutil.TOKEN, token, sessionId, tokenLimit)
-	util.SetKV(comutil.SESSION, sessionId, fmt.Sprint(account.ID), sessionLimit)
-
-	return &entity.LoginResp{
-		TimeStamp: int(time.Now().Unix()),
-		AccountId: account.ID,
-		Token:     token,
-		SessionId: sessionId,
-	}, nil
 }
 
 func (self *UserService) GetUserBase(id uint32) (*module.UserBase, error) {

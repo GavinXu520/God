@@ -6,8 +6,9 @@ const (
 )
 
 const (
-	REGISTER = "register"
-	LOGIN    = "login"
+	REGISTER     = "register"
+	LOGIN        = "login"
+	Login_mobile = "lmobile"
 )
 
 const (
