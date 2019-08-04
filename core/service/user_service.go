@@ -136,15 +136,44 @@ func storeLogin(mobile, accountId string) (string, string) {
 	return token, sessionId
 }
 
-func (self *UserService) LoginByPwd(header *entity.ReqHeader, req *entity.LoginReq) (*entity.LoginResp, error) {
+func (self *UserService) LoginByMobile(header *entity.ReqHeader, req *entity.LoginReq, checkPwd bool) (*entity.LoginResp, error) {
 
 	db := common.DB
 
-	account, err := userDao.GetAccountByMobileAndPwd(db, req.Data.MobileNo, req.Data.LoginPassword)
-	if nil != err {
-		common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, mobileNo: %s, err: %v", req.Data.MobileNo, err))
-		return nil, err
+	var account *module.UserAccount
+
+	if checkPwd {
+		acnt, err := userDao.GetAccountByMobile(db, req.Data.MobileNo)
+		if nil != err {
+			common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, mobileNo: %s, err: %v", req.Data.MobileNo, err))
+			return nil, err
+		}
+		if nil == acnt {
+			return nil, comerr.NewBizErr(fmt.Sprintf("Failed to Login by mobile and loginPwd, the account is empty, mobileNo: %s", req.Data.MobileNo))
+		}
+
+		if acnt.LoginPwd != req.Data.LoginPassword {
+
+			// TODO need to add wrong num limit by loginPwd
+
+			return nil, comerr.NewBizErr(fmt.Sprintf("Failed to Login by mobile and loginPwd, this pwd is wrong, mobileNo: %s", req.Data.MobileNo))
+		}
+
+		account = acnt
+	} else {
+		acnt, err := userDao.GetAccountByMobile(db, req.Data.MobileNo)
+		if nil != err {
+			common.Logger.Error(fmt.Sprintf("Failed to Login by mobile and loginPwd, mobileNo: %s, err: %v", req.Data.MobileNo, err))
+			return nil, err
+		}
+
+		if nil == acnt {
+			return nil, comerr.NewBizErr(fmt.Sprintf("Failed to Login by mobile and loginPwd, the account is empty, mobileNo: %s", req.Data.MobileNo))
+		}
+
+		account = acnt
 	}
+
 	if nil == account {
 		common.Logger.Warn(fmt.Sprintf("The account is empty by mobile and loginPwd, mobileNo: %s", req.Data.MobileNo))
 		return nil, nil

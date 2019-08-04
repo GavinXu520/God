@@ -8,4 +8,6 @@ func SetUpApi(router *gin.Engine) {
 
 	// SetUp user api
 	setUserApi(root)
+	// SetUp customer api
+	setCustomerApi(root)
 }

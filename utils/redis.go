@@ -22,3 +22,12 @@ func ExpireKV(businessName, key string, second int) (bool, error) {
 		return ok, nil
 	}
 }
+
+func DelKV(businessName, key string) (bool, error) {
+	key = businessName + ":" + key
+	if _, err := common.Redis.Del(key).Result(); nil != err {
+		return false, err
+	} else {
+		return true, nil
+	}
+}

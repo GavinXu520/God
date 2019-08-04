@@ -60,5 +60,7 @@ var (
 
 	LIMIT_REQUEST = &ErrCode{"1014", "request is frequent", false}
 
+	NEED_RELOGIN = &ErrCode{"2000", "you have not login", false}
+
 	EMPTY_RESULT = &ErrCode{"6003", "result is empty", false}
 )

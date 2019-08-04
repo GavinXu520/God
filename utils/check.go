@@ -10,7 +10,10 @@ import (
 
 	"errors"
 
+	"strings"
+
 	"github.com/spf13/viper"
+	redisErr "gopkg.in/redis.v4"
 )
 
 func CheckIpRate(preffix, ip string, duration int) bool {
@@ -42,4 +45,28 @@ func CheckApiTimeStamp(prefix string, timestamp int) (int64, error) {
 	//	return comerr.NewBizErr("timestamp overflow")
 	//}
 	return 0, nil
+}
+
+func CheckTokenAndSession(token, sessionId, accountId string) (bool, string, error) {
+	sessionId, err := GetKV(comutil.TOKEN, token)
+	if nil != err && err.Error() != redisErr.Nil.Error() {
+		return false, "", err
+	} else if (nil != err && err.Error() == redisErr.Nil.Error()) || "" == strings.TrimSpace(sessionId) {
+		// generate a new sessionId relate to curr session
+		sessionId := RandStr()
+		sessionLimit := viper.GetInt("common.sessionDuration")
+		SetKV(comutil.SESSION, sessionId, accountId, sessionLimit)
+		return true, sessionId, nil
+	}
+
+	if accountId, err := GetKV(comutil.SESSION, sessionId); nil != err && err.Error() != redisErr.Nil.Error() {
+		return false, "", err
+	} else if (nil != err && err.Error() == redisErr.Nil.Error()) || "" == strings.TrimSpace(accountId) {
+		DelKV(comutil.TOKEN, token)
+		DelKV(comutil.SESSION, sessionId)
+		common.Logger.Error("the accountId is empty on session, need to  login")
+		return false, "", nil
+	} else {
+		return true, sessionId, nil
+	}
 }

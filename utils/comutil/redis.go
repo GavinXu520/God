@@ -9,6 +9,7 @@ const (
 	REGISTER     = "register"
 	LOGIN        = "login"
 	Login_mobile = "lmobile"
+	LOAN         = "loan"
 )
 
 const (

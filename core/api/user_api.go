@@ -6,16 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var userController = &controller.UserController{}
+var user = &controller.UserController{}
 
 func setUserApi(rootApi *gin.RouterGroup) {
 
 	api := rootApi.Group("/user")
 
 	// 注册
-	api.POST("/register", userController.Register)
+	api.POST("/register", user.Register)
 	// 密码登录
-	api.POST("/login", userController.LoginByPwd)
+	api.POST("/login", user.LoginByPwd)
+	// 验证码登录
+	api.POST("/loginSms", user.LoginByMobileSms)
+	//
 
-	api.GET("/queryUserBase", userController.GetUserBase)
+	api.GET("/queryUserBase", user.GetUserBase)
 }

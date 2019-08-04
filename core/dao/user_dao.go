@@ -52,7 +52,7 @@ func (self *UserDao) AddRegisterInfo(tx *gorm.DB, register *module.UserRegisterI
 func (self *UserDao) GetUserBase(id uint32) (*module.UserBase, error) {
 
 	user := &module.UserBase{}
-	err := common.DB.Model(user).Where("id = ? ", id).Find(user).Error
+	err := common.DB.Model(user).Where("id = ?  AND status = 0", id).Find(user).Error
 	if nil != err {
 		return nil, err
 	}
@@ -62,7 +62,17 @@ func (self *UserDao) GetUserBase(id uint32) (*module.UserBase, error) {
 func (self *UserDao) GetAccountByMobileAndPwd(tx *gorm.DB, mobileNo, pwd string) (*module.UserAccount, error) {
 
 	user := &module.UserAccount{}
-	err := tx.Model(user).Where("mobile = ? AND login_pwd = ?", mobileNo, pwd).Find(user).Error
+	err := tx.Model(user).Where("mobile = ? AND login_pwd = ? AND status = 0", mobileNo, pwd).Find(user).Error
+	if nil != err {
+		return nil, err
+	}
+	return user, err
+}
+
+func (self *UserDao) GetAccountByMobile(tx *gorm.DB, mobileNo string) (*module.UserAccount, error) {
+
+	user := &module.UserAccount{}
+	err := tx.Model(user).Where("mobile = ? AND status = 0", mobileNo).Find(user).Error
 	if nil != err {
 		return nil, err
 	}
